@@ -1,0 +1,9 @@
+# Uploaded user files (ephemeral on Render)
+uploads/*
+!uploads/.gitkeep
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.vscode/
+*.swp
