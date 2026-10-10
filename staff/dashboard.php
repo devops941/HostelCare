@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 // Staff Dashboard for Hostel Complaint Tracking System
 require_once __DIR__ . '/../config/db.php';
 require_once __DIR__ . '/../includes/auth.php';

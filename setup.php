@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 /**
  * HostelCare - One-time Database Setup Script
  * Browse to http://localhost/HostelCare/setup.php to initialize the database.

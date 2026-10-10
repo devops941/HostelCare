@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 /**
  * Session Authentication Helper for Hostel Complaint System
  * Supports roles: admin, staff, student

@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 /**
  * Admin Dashboard for Hostel Complaint Tracking System
  * Shows statistics, escalated complaints, and recent complaints

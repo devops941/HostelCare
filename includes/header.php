@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 if (!function_exists('isLoggedIn')) {
     require_once __DIR__ . '/auth.php';
 }
