@@ -45,7 +45,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <body class="auth-page">
 
 <div class="auth-card">
-    <div class="auth-logo"><i class="bi bi-shield-check-fill"></i></div>
+    <div class="auth-logo"><i class="bi bi-shield-lock-fill" style="font-size: 28px; color: #ffffff; display: block;"></i></div>
     <h2 style="font-size:22px;font-weight:800;text-align:center;margin-bottom:4px">Welcome Back</h2>
     <p style="text-align:center;color:#64748b;font-size:13px;margin-bottom:24px">Sign in to <strong>HostelCare</strong></p>
 
