@@ -1,4 +1,5 @@
 <?php
+require_once __DIR__ . '/config/db.php';
 require_once __DIR__ . '/includes/auth.php';
 
 if (isLoggedIn()) { redirectByRole(); }
@@ -12,7 +13,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (!$email || !$password) {
         $error = 'Email and password are required.';
     } else {
-        require_once __DIR__ . '/config/db.php';
         $db   = getDB();
         $stmt = $db->prepare('SELECT user_id, name, email, password_hash, role, room_no, phone FROM users WHERE email = ?');
         $stmt->execute([$email]);
