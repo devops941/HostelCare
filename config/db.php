@@ -20,7 +20,8 @@ function getDB() {
                 PDO::ATTR_EMULATE_PREPARES => false,
             ]);
         } catch (PDOException $e) {
-            die(json_encode(['error' => 'DB connection failed']));
+            http_response_code(503);
+            die('<!DOCTYPE html><html><head><title>Service Unavailable</title></head><body style="font-family:sans-serif;text-align:center;padding:80px"><h2>Database Unavailable</h2><p>Could not connect to the database. Please check environment variables or try again later.</p></body></html>');
         }
     }
     return $pdo;
