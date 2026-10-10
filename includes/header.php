@@ -32,7 +32,7 @@ function isActive(string $segment): string {
 
     <!-- Brand -->
     <a href="<?= BASE_URL ?>/" class="sidebar-brand">
-      <div class="sidebar-brand-icon"><i class="bi bi-shield-check-fill"></i></div>
+      <div class="sidebar-brand-icon"><i class="bi bi-shield-fill-check"></i></div>
       <div class="sidebar-brand-name">HostelCare<span>Complaint Tracking</span></div>
     </a>
 

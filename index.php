@@ -55,8 +55,8 @@ if (isset($_SESSION['user_id'])) {
 
 <section class="lp-hero">
   <div style="position:relative;z-index:1;max-width:700px">
-    <div class="hero-badge"><i class="bi bi-shield-check-fill" style="color:#818cf8"></i> Trusted Hostel Management</div>
-    <div class="hero-icon"><i class="bi bi-shield-check-fill"></i></div>
+    <div class="hero-badge"><i class="bi bi-shield-fill-check" style="color:#818cf8"></i> Trusted Hostel Management</div>
+    <div class="hero-icon"><i class="bi bi-shield-fill-check"></i></div>
     <h1 class="hero-title">HostelCare<br><span>Smart Complaint System</span></h1>
     <p class="hero-sub">Submit, track, and resolve hostel complaints with real-time updates, auto-assignment, and complete transparency.</p>
     <div class="hero-btns">
