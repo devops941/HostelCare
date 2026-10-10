@@ -1,9 +1,6 @@
 -- Hostel Complaint Tracking System - MySQL 8 Schema
--- Database creation and initialization
-
--- Create Database
-CREATE DATABASE IF NOT EXISTS hostelcare;
-USE hostelcare;
+-- In phpMyAdmin, select the target database before importing this file.
+-- This avoids hardcoding a database name that may differ on shared hosting.
 
 -- Table: users
 CREATE TABLE IF NOT EXISTS users (

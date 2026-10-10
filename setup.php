@@ -5,24 +5,20 @@
  * DELETE or protect this file after setup is complete.
  */
 
-$DB_HOST = 'localhost';
-$DB_USER = 'root';
-$DB_PASS = '';
-$DB_NAME = 'hostelcare';
+$DB_HOST = getenv('DB_HOST') ?: 'localhost';
+$DB_USER = getenv('DB_USER') ?: 'root';
+$DB_PASS = getenv('DB_PASS') ?: '';
+$DB_NAME = getenv('DB_NAME') ?: 'hostelcare';
 
 $messages = [];
 $success  = true;
 
 try {
-    // Connect without DB first
-    $pdo = new PDO("mysql:host=$DB_HOST;charset=utf8mb4", $DB_USER, $DB_PASS, [
+    // Connect directly to the database
+    $pdo = new PDO("mysql:host=$DB_HOST;dbname=$DB_NAME;charset=utf8mb4", $DB_USER, $DB_PASS, [
         PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
     ]);
-
-    // Create DB
-    $pdo->exec("CREATE DATABASE IF NOT EXISTS `$DB_NAME` CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci");
-    $pdo->exec("USE `$DB_NAME`");
-    $messages[] = ['ok', 'Database created / confirmed.'];
+    $messages[] = ['ok', 'Connected to Database successfully.'];
 
     // Create tables
     $pdo->exec("CREATE TABLE IF NOT EXISTS users (
