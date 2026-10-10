@@ -4,7 +4,9 @@ define('DB_NAME', getenv('DB_NAME') ?: 'hostelcare');
 define('DB_USER', getenv('DB_USER') ?: 'root');
 define('DB_PASS', getenv('DB_PASS') ?: '');
 define('UPLOAD_DIR', __DIR__ . '/../uploads/');
-define('BASE_URL',   rtrim(getenv('BASE_URL') ?: '/HostelCare', '/'));
+$_base = getenv('BASE_URL');
+define('BASE_URL', rtrim($_base !== false ? $_base : '/HostelCare', '/'));
+unset($_base);
 define('UPLOAD_URL', BASE_URL . '/uploads/');
 define('ESCALATION_HOURS', 48);
 
