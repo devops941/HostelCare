@@ -94,7 +94,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             onmouseover="this.style.background='#3b82f6';this.style.color='#fff'" onmouseout="this.style.background='#dbeafe';this.style.color='#1e40af'">
             <i class="bi bi-tools"></i> Staff
         </button>
-        <button type="button" onclick="fillCreds('john.doe@student.com','student123')"
+        <button type="button" onclick="fillCreds('amit@student.com','student123')"
             style="background:#d1fae5;color:#065f46;padding:5px 12px;border-radius:99px;font-size:11px;font-weight:600;border:1.5px solid #a7f3d0;cursor:pointer;transition:all .2s"
             onmouseover="this.style.background='#10b981';this.style.color='#fff'" onmouseout="this.style.background='#d1fae5';this.style.color='#065f46'">
             <i class="bi bi-mortarboard-fill"></i> Student

@@ -20,6 +20,14 @@ try {
     ]);
     $messages[] = ['ok', 'Connected to Database successfully.'];
 
+    // Force reset if ?reset=1 is in URL
+    if (isset($_GET['reset']) && $_GET['reset'] === '1') {
+        $pdo->exec('SET FOREIGN_KEY_CHECKS = 0');
+        $pdo->exec('DROP TABLE IF EXISTS feedback, complaint_updates, complaints, categories, users');
+        $pdo->exec('SET FOREIGN_KEY_CHECKS = 1');
+        $messages[] = ['info', 'All existing tables were dropped successfully due to reset flag.'];
+    }
+
     // Create tables
     $pdo->exec("CREATE TABLE IF NOT EXISTS users (
         user_id       INT AUTO_INCREMENT PRIMARY KEY,
