@@ -67,14 +67,6 @@ function isActive(string $segment): string {
           </a>
         </div>
 
-      <?php elseif ($role === 'staff'): ?>
-        <div class="nav-section-label">Workspace</div>
-        <div class="nav-item">
-          <a class="nav-link <?= isActive('staff/dashboard') ?>" href="<?= BASE_URL ?>/staff/dashboard.php">
-            <i class="bi bi-speedometer2"></i> Dashboard
-          </a>
-        </div>
-
       <?php elseif ($role === 'student'): ?>
         <div class="nav-section-label">My Portal</div>
         <div class="nav-item">

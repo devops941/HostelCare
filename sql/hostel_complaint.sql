@@ -8,7 +8,7 @@ CREATE TABLE IF NOT EXISTS users (
   name VARCHAR(100) NOT NULL,
   email VARCHAR(100) NOT NULL UNIQUE,
   password_hash VARCHAR(255) NOT NULL,
-  role ENUM('admin','staff','student') NOT NULL DEFAULT 'student',
+  role ENUM('admin','student') NOT NULL DEFAULT 'student',
   room_no VARCHAR(10),
   phone VARCHAR(15),
   created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
@@ -21,11 +21,8 @@ CREATE TABLE IF NOT EXISTS users (
 CREATE TABLE IF NOT EXISTS categories (
   category_id INT PRIMARY KEY AUTO_INCREMENT,
   name VARCHAR(50) NOT NULL UNIQUE,
-  assigned_staff_id INT NOT NULL,
   created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-  updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  FOREIGN KEY (assigned_staff_id) REFERENCES users(user_id) ON DELETE RESTRICT ON UPDATE CASCADE,
-  INDEX idx_staff (assigned_staff_id)
+  updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- Table: complaints
@@ -82,55 +79,48 @@ CREATE TABLE IF NOT EXISTS feedback (
 INSERT INTO users (name, email, password_hash, role, phone) VALUES
 ('Admin User', 'admin@hostel.com', '$2y$10$wqN0kKvbKL0Q7z.uRK5V.OMfT5ksXNnlCMzlCJRj3T2PsNBXf5yDK', 'admin', '9999999999');
 
--- Insert Staff Members
-INSERT INTO users (name, email, password_hash, role, phone) VALUES
-('Electrical Staff', 'electrical@hostel.com', '$2y$10$wqN0kKvbKL0Q7z.uRK5V.OMfT5ksXNnlCMzlCJRj3T2PsNBXf5yDK', 'staff', '8888888881'),
-('Plumbing Staff', 'plumbing@hostel.com', '$2y$10$wqN0kKvbKL0Q7z.uRK5V.OMfT5ksXNnlCMzlCJRj3T2PsNBXf5yDK', 'staff', '8888888882'),
-('Mess Staff', 'mess@hostel.com', '$2y$10$wqN0kKvbKL0Q7z.uRK5V.OMfT5ksXNnlCMzlCJRj3T2PsNBXf5yDK', 'staff', '8888888883'),
-('Wi-Fi & Network Staff', 'wifi@hostel.com', '$2y$10$wqN0kKvbKL0Q7z.uRK5V.OMfT5ksXNnlCMzlCJRj3T2PsNBXf5yDK', 'staff', '8888888884'),
-('Cleaning & Maintenance Staff', 'cleaning@hostel.com', '$2y$10$wqN0kKvbKL0Q7z.uRK5V.OMfT5ksXNnlCMzlCJRj3T2PsNBXf5yDK', 'staff', '8888888885');
-
 -- Insert Student Users
 INSERT INTO users (name, email, password_hash, role, room_no, phone) VALUES
 ('John Doe', 'john.doe@student.com', '$2y$10$wqN0kKvbKL0Q7z.uRK5V.OMfT5ksXNnlCMzlCJRj3T2PsNBXf5yDK', 'student', '101', '9111111111'),
 ('Jane Smith', 'jane.smith@student.com', '$2y$10$wqN0kKvbKL0Q7z.uRK5V.OMfT5ksXNnlCMzlCJRj3T2PsNBXf5yDK', 'student', '202', '9222222222');
 
--- Insert Categories with Staff Assignment
-INSERT INTO categories (name, assigned_staff_id) VALUES
-('Electrical', 2),
-('Plumbing', 3),
-('Mess', 4),
-('Wi-Fi & Network', 5),
-('Cleaning', 6);
+-- Insert Categories
+INSERT INTO categories (name) VALUES
+('Electrical'),
+('Plumbing'),
+('Mess / Food'),
+('Wi-Fi / Network'),
+('Cleaning'),
+('Other');
 
 -- Insert Sample Complaints
 -- Complaint 1: Pending status
 INSERT INTO complaints (student_id, category_id, title, description, image_path, priority, status) VALUES
-(8, 1, 'Broken Light Fixture in Room', 'The ceiling light fixture in my room is not working. It seems like a bulb or wiring issue.', '/uploads/complaints/light_001.jpg', 'medium', 'pending');
+(2, 1, 'Broken Light Fixture in Room', 'The ceiling light fixture in my room is not working. It seems like a bulb or wiring issue.', '/uploads/complaints/light_001.jpg', 'medium', 'pending');
 
 -- Complaint 2: In Progress status
 INSERT INTO complaints (student_id, category_id, title, description, image_path, priority, status) VALUES
-(9, 2, 'Leaking Tap in Bathroom', 'The tap in the bathroom is constantly dripping, wasting water. Please fix urgently.', '/uploads/complaints/tap_002.jpg', 'high', 'in_progress');
+(3, 2, 'Leaking Tap in Bathroom', 'The tap in the bathroom is constantly dripping, wasting water. Please fix urgently.', '/uploads/complaints/tap_002.jpg', 'high', 'in_progress');
 
 -- Complaint 3: Resolved status
 INSERT INTO complaints (student_id, category_id, title, description, image_path, priority, status) VALUES
-(8, 3, 'Poor Quality Food Served', 'The mess served substandard food today. The rice was undercooked and vegetables were not fresh.', '/uploads/complaints/food_003.jpg', 'medium', 'resolved');
+(2, 3, 'Poor Quality Food Served', 'The mess served substandard food today. The rice was undercooked and vegetables were not fresh.', '/uploads/complaints/food_003.jpg', 'medium', 'resolved');
 
 -- Insert Complaint Updates
 INSERT INTO complaint_updates (complaint_id, updated_by, old_status, new_status, remarks) VALUES
-(1, 2, 'pending', 'assigned', 'Assigned to electrical staff for investigation');
+(1, 1, 'pending', 'assigned', 'Assigned to electrical department for investigation');
 
 INSERT INTO complaint_updates (complaint_id, updated_by, old_status, new_status, remarks) VALUES
-(2, 3, 'pending', 'assigned', 'Acknowledged and scheduled for repair tomorrow morning');
+(2, 1, 'pending', 'assigned', 'Acknowledged and scheduled for repair tomorrow morning');
 
 INSERT INTO complaint_updates (complaint_id, updated_by, old_status, new_status, remarks) VALUES
-(2, 3, 'assigned', 'in_progress', 'Repair work started on the leaking tap');
+(2, 1, 'assigned', 'in_progress', 'Repair work started on the leaking tap');
 
 INSERT INTO complaint_updates (complaint_id, updated_by, old_status, new_status, remarks) VALUES
-(3, 4, 'pending', 'assigned', 'Forwarded to mess management for review');
+(3, 1, 'pending', 'assigned', 'Forwarded to mess management for review');
 
 INSERT INTO complaint_updates (complaint_id, updated_by, old_status, new_status, remarks) VALUES
-(3, 4, 'assigned', 'resolved', 'Issue discussed with kitchen staff. Quality has been improved for next service');
+(3, 1, 'assigned', 'resolved', 'Issue discussed with kitchen team. Quality has been improved for next service');
 
 -- Insert Feedback for Resolved Complaint
 INSERT INTO feedback (complaint_id, rating, comments) VALUES

@@ -25,7 +25,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $name = trim($_POST['user_name'] ?? '');
                 $email = trim($_POST['user_email'] ?? '');
                 $phone = trim($_POST['user_phone'] ?? '');
-                $role = $_POST['user_role'] ?? 'staff';
+                $role = $_POST['user_role'] ?? 'student';
                 $temp_password = $_POST['temp_password'] ?? 'TempPass123!';
 
                 if (empty($name) || empty($email)) {
@@ -59,9 +59,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     $message = 'Cannot delete admin users';
                     $messageType = 'danger';
                 } else {
-                    // Check if user has assigned complaints
-                    $check_complaints = $pdo->prepare('SELECT COUNT(*) as count FROM complaints WHERE student_id = ? OR category_id IN (SELECT category_id FROM categories WHERE assigned_staff_id = ?)');
-                    $check_complaints->execute([$user_id, $user_id]);
+                    // Check if user has submitted complaints
+                    $check_complaints = $pdo->prepare('SELECT COUNT(*) as count FROM complaints WHERE student_id = ?');
+                    $check_complaints->execute([$user_id]);
                     $complaint_result = $check_complaints->fetch();
 
                     if ($complaint_result['count'] > 0) {
@@ -103,11 +103,6 @@ $users = $users_stmt->fetchAll();
 $role_stats = $pdo->query('
     SELECT role, COUNT(*) as count FROM users GROUP BY role
 ')->fetchAll(PDO::FETCH_KEY_PAIR);
-
-// Get available staff for dropdown
-$staff_list = $pdo->query('
-    SELECT user_id, name, email FROM users WHERE role = "staff" ORDER BY name
-')->fetchAll();
 
 include __DIR__ . '/../includes/header.php';
 ?>
@@ -211,16 +206,16 @@ include __DIR__ . '/../includes/header.php';
                                         <td>
                                             <?php
                                             $role_badge_class = match($user['role']) {
-                                                'admin' => 'warning',
-                                                'staff' => 'success',
+                                                'admin'   => 'warning',
+                                                'staff'   => 'success',
                                                 'student' => 'info',
-                                                default => 'secondary'
+                                                default   => 'secondary'
                                             };
                                             $role_icon = match($user['role']) {
-                                                'admin' => 'shield-fill',
-                                                'staff' => 'tools',
+                                                'admin'   => 'shield-fill',
+                                                'staff'   => 'tools',
                                                 'student' => 'mortarboard',
-                                                default => 'person'
+                                                default   => 'person'
                                             };
                                             ?>
                                             <span class="badge bg-<?php echo $role_badge_class; ?>">
@@ -287,8 +282,8 @@ include __DIR__ . '/../includes/header.php';
                     <div class="mb-3">
                         <label for="user_role" class="form-label">Role</label>
                         <select class="form-select" id="user_role" name="user_role" required>
-                            <option value="staff">Staff Member</option>
                             <option value="student">Student</option>
+                            <option value="staff">Staff Member</option>
                             <option value="admin">Administrator</option>
                         </select>
                     </div>
@@ -305,7 +300,8 @@ include __DIR__ . '/../includes/header.php';
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-secondary"
+                        onclick="bootstrap.Modal.getInstance(document.getElementById('addUserModal')).hide()">Cancel</button>
                     <button type="submit" class="btn btn-success">
                         <i class="bi bi-check-circle"></i> Add User
                     </button>
@@ -316,6 +312,16 @@ include __DIR__ . '/../includes/header.php';
 </div>
 
 <script>
+// Move modal to body to avoid flex/overflow container issues
+const addUserModal = document.getElementById('addUserModal');
+document.body.appendChild(addUserModal);
+
+// Reset form fields when modal is closed
+addUserModal.addEventListener('hidden.bs.modal', () => {
+    addUserModal.querySelector('form').reset();
+    document.getElementById('temp_password').value = 'TempPass123!';
+});
+
 function generatePassword() {
     const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%';
     let password = '';

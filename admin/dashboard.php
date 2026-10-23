@@ -38,7 +38,7 @@ try {
     $inProgressComplaints = $progressStmt->fetch()['count'] ?? 0;
 
     // Resolved complaints
-    $resolvedStmt = $db->prepare("SELECT COUNT(*) as count FROM complaints WHERE status = 'resolved'");
+    $resolvedStmt = $db->prepare("SELECT COUNT(*) as count FROM complaints WHERE status IN ('resolved','closed')");
     $resolvedStmt->execute();
     $resolvedComplaints = $resolvedStmt->fetch()['count'] ?? 0;
 

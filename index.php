@@ -3,9 +3,8 @@ require_once __DIR__ . '/config/db.php';
 session_start();
 if (isset($_SESSION['user_id'])) {
     $role = $_SESSION['role'] ?? 'student';
-    if ($role === 'admin')       header('Location: ' . BASE_URL . '/admin/dashboard.php');
-    elseif ($role === 'staff')   header('Location: ' . BASE_URL . '/staff/dashboard.php');
-    else                         header('Location: ' . BASE_URL . '/student/dashboard.php');
+    if ($role === 'admin') header('Location: ' . BASE_URL . '/admin/dashboard.php');
+    else                   header('Location: ' . BASE_URL . '/student/dashboard.php');
     exit;
 }
 ?>
@@ -77,8 +76,8 @@ if (isset($_SESSION['user_id'])) {
     </div>
     <div class="feat-card">
       <div class="feat-icon" style="background:linear-gradient(135deg,#10b981,#34d399)"><i class="bi bi-person-check-fill"></i></div>
-      <h5>Auto-Assignment</h5>
-      <p>Complaints are automatically routed to the right staff based on category.</p>
+      <h5>Admin-Managed</h5>
+      <p>Admin directly reviews, processes, and resolves all complaints with full control.</p>
     </div>
     <div class="feat-card">
       <div class="feat-icon" style="background:linear-gradient(135deg,#f59e0b,#fbbf24)"><i class="bi bi-exclamation-triangle-fill"></i></div>
@@ -98,7 +97,7 @@ if (isset($_SESSION['user_id'])) {
     <div class="feat-card">
       <div class="feat-icon" style="background:linear-gradient(135deg,#ef4444,#f87171)"><i class="bi bi-lock-fill"></i></div>
       <h5>Secure & Private</h5>
-      <p>Role-based access control keeps data secure for admin, staff, and students.</p>
+      <p>Role-based access control keeps data secure for admin and students.</p>
     </div>
   </div>
 </section>
@@ -119,7 +118,7 @@ if (isset($_SESSION['user_id'])) {
     <div class="step-box">
       <div class="step-num">3</div>
       <h5>Track Progress</h5>
-      <p>Watch real-time status updates as staff work on your complaint.</p>
+      <p>Watch real-time status updates as admin works on your complaint.</p>
     </div>
     <div class="step-box">
       <div class="step-num">4</div>

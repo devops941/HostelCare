@@ -42,9 +42,9 @@ try {
     $messages[] = ['ok', 'Table <b>users</b> ready.'];
 
     $pdo->exec("CREATE TABLE IF NOT EXISTS categories (
-        category_id       INT AUTO_INCREMENT PRIMARY KEY,
-        name              VARCHAR(50) NOT NULL,
-        assigned_staff_id INT DEFAULT NULL,
+        category_id        INT AUTO_INCREMENT PRIMARY KEY,
+        name               VARCHAR(50) NOT NULL,
+        assigned_staff_id  INT DEFAULT NULL,
         FOREIGN KEY (assigned_staff_id) REFERENCES users(user_id) ON DELETE SET NULL
     ) ENGINE=InnoDB");
     $messages[] = ['ok', 'Table <b>categories</b> ready.'];
@@ -92,21 +92,10 @@ try {
     $count = $pdo->query('SELECT COUNT(*) FROM users')->fetchColumn();
     if ((int)$count === 0) {
         $admin_hash   = password_hash('admin123',   PASSWORD_BCRYPT);
-        $staff_hash   = password_hash('staff123',   PASSWORD_BCRYPT);
         $student_hash = password_hash('student123', PASSWORD_BCRYPT);
 
         $pdo->prepare('INSERT INTO users (name,email,password_hash,role,phone) VALUES (?,?,?,?,?)')
             ->execute(['Chief Warden', 'admin@hostel.com', $admin_hash, 'admin', '9000000001']);
-
-        $staff = [
-            ['Ravi Kumar',   'electrical@hostel.com', '9000000002'],
-            ['Suresh Patel', 'plumbing@hostel.com',   '9000000003'],
-            ['Meena Devi',   'mess@hostel.com',        '9000000004'],
-            ['Arjun Singh',  'wifi@hostel.com',        '9000000005'],
-            ['Priya Nair',   'cleaning@hostel.com',    '9000000006'],
-        ];
-        $ins = $pdo->prepare('INSERT INTO users (name,email,password_hash,role,phone) VALUES (?,?,?,\'staff\',?)');
-        foreach ($staff as $s) $ins->execute([$s[0], $s[1], $staff_hash, $s[2]]);
 
         $students = [
             ['Amit Sharma', 'amit@student.com',  'A101', '9111111001'],
@@ -116,7 +105,7 @@ try {
         $ins2 = $pdo->prepare('INSERT INTO users (name,email,password_hash,role,room_no,phone) VALUES (?,?,?,\'student\',?,?)');
         foreach ($students as $st) $ins2->execute([$st[0], $st[1], $student_hash, $st[2], $st[3]]);
 
-        $messages[] = ['ok', 'Seeded <b>9 users</b>: 1 admin, 5 staff, 3 students.'];
+        $messages[] = ['ok', 'Seeded <b>4 users</b>: 1 admin, 3 students.'];
     } else {
         $messages[] = ['info', "Users table already has $count records — skipping user seed."];
     }
@@ -124,9 +113,9 @@ try {
     // Seed categories if empty
     $catCount = $pdo->query('SELECT COUNT(*) FROM categories')->fetchColumn();
     if ((int)$catCount === 0) {
-        $cats = ['Electrical'=>2,'Plumbing'=>3,'Mess / Food'=>4,'Wi-Fi / Network'=>5,'Cleaning'=>6,'Other'=>null];
-        $insCat = $pdo->prepare('INSERT INTO categories (name,assigned_staff_id) VALUES (?,?)');
-        foreach ($cats as $name => $sid) $insCat->execute([$name, $sid]);
+        $cats = ['Electrical','Plumbing','Mess / Food','Wi-Fi / Network','Cleaning','Other'];
+        $insCat = $pdo->prepare('INSERT INTO categories (name) VALUES (?)');
+        foreach ($cats as $name) $insCat->execute([$name]);
         $messages[] = ['ok', 'Seeded <b>6 categories</b>.'];
     } else {
         $messages[] = ['info', 'Categories already seeded — skipping.'];
@@ -136,11 +125,11 @@ try {
     $cmpCount = $pdo->query('SELECT COUNT(*) FROM complaints')->fetchColumn();
     if ((int)$cmpCount === 0) {
         $sampleComplaints = [
-            [7, 1, 'Fan not working in Room A101',    'Ceiling fan stopped working, makes clicking sound.', 'high',   'in_progress', '-3 days'],
-            [8, 4, 'Wi-Fi slow in B-block',            'Internet extremely slow since Monday.',               'medium', 'assigned',    '-5 days'],
-            [9, 2, 'Bathroom tap leaking',             'Tap leaks constantly wasting water.',                 'high',   'pending',     '-2 days'],
-            [7, 3, 'Food quality poor',                'Mess food quality has degraded significantly.',       'low',    'resolved',    '-10 days'],
-            [8, 5, 'Common area not cleaned',          '2nd floor corridor not cleaned for 3 days.',          'medium', 'pending',     '-55 hours'],
+            [2, 1, 'Fan not working in Room A101',    'Ceiling fan stopped working, makes clicking sound.', 'high',   'in_progress', '-3 days'],
+            [3, 4, 'Wi-Fi slow in B-block',            'Internet extremely slow since Monday.',               'medium', 'pending',     '-5 days'],
+            [4, 2, 'Bathroom tap leaking',             'Tap leaks constantly wasting water.',                 'high',   'pending',     '-2 days'],
+            [2, 3, 'Food quality poor',                'Mess food quality has degraded significantly.',       'low',    'resolved',    '-10 days'],
+            [3, 5, 'Common area not cleaned',          '2nd floor corridor not cleaned for 3 days.',          'medium', 'pending',     '-55 hours'],
         ];
         $insCmp = $pdo->prepare('INSERT INTO complaints (student_id,category_id,title,description,priority,status,created_at,updated_at) VALUES (?,?,?,?,?,?,DATE_SUB(NOW(),INTERVAL ? SECOND),DATE_SUB(NOW(),INTERVAL ? SECOND))');
         foreach ($sampleComplaints as $cmp) {
@@ -156,14 +145,11 @@ try {
         }
         $messages[] = ['ok', 'Seeded <b>5 sample complaints</b>.'];
 
-        // Seed some complaint_updates
+        // Seed some complaint_updates — updated_by=1 (admin)
         $updData = [
-            [1, 2, 'pending','assigned',   'Assigned to electrician.'],
-            [1, 2, 'assigned','in_progress','Visited room, ordering part.'],
-            [2, 5, 'pending','assigned',   'Logged with ISP, checking router.'],
-            [4, 4, 'pending','assigned',   'Feedback noted.'],
-            [4, 4, 'assigned','in_progress','Menu revision in progress.'],
-            [4, 4, 'in_progress','resolved','Issue resolved. New menu implemented.'],
+            [1, 1, 'pending', 'in_progress', 'Work started on the fan issue.'],
+            [4, 1, 'pending', 'in_progress', 'Menu revision in progress.'],
+            [4, 1, 'in_progress', 'resolved', 'Issue resolved. New menu implemented.'],
         ];
         $insUpd = $pdo->prepare('INSERT INTO complaint_updates (complaint_id,updated_by,old_status,new_status,remarks) VALUES (?,?,?,?,?)');
         foreach ($updData as $u) $insUpd->execute($u);
@@ -217,11 +203,6 @@ try {
             <thead class="table-light"><tr><th>Role</th><th>Email</th><th>Password</th></tr></thead>
             <tbody>
                 <tr><td><span class="badge bg-danger">Admin</span></td><td>admin@hostel.com</td><td><code>admin123</code></td></tr>
-                <tr><td><span class="badge bg-info">Staff (Electrical)</span></td><td>electrical@hostel.com</td><td><code>staff123</code></td></tr>
-                <tr><td><span class="badge bg-info">Staff (Plumbing)</span></td><td>plumbing@hostel.com</td><td><code>staff123</code></td></tr>
-                <tr><td><span class="badge bg-info">Staff (Mess)</span></td><td>mess@hostel.com</td><td><code>staff123</code></td></tr>
-                <tr><td><span class="badge bg-info">Staff (Wi-Fi)</span></td><td>wifi@hostel.com</td><td><code>staff123</code></td></tr>
-                <tr><td><span class="badge bg-info">Staff (Cleaning)</span></td><td>cleaning@hostel.com</td><td><code>staff123</code></td></tr>
                 <tr><td><span class="badge bg-success">Student</span></td><td>amit@student.com</td><td><code>student123</code></td></tr>
                 <tr><td><span class="badge bg-success">Student</span></td><td>priya@student.com</td><td><code>student123</code></td></tr>
                 <tr><td><span class="badge bg-success">Student</span></td><td>rahul@student.com</td><td><code>student123</code></td></tr>

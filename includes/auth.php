@@ -1,7 +1,7 @@
 <?php
 /**
  * Session Authentication Helper for Hostel Complaint System
- * Supports roles: admin, staff, student
+ * Supports roles: admin, student
  */
 
 // Start session
@@ -68,9 +68,6 @@ function redirectByRole() {
     switch ($role) {
         case 'admin':
             header('Location: ' . BASE_URL . '/admin/dashboard.php');
-            break;
-        case 'staff':
-            header('Location: ' . BASE_URL . '/staff/dashboard.php');
             break;
         case 'student':
             header('Location: ' . BASE_URL . '/student/dashboard.php');

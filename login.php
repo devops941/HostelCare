@@ -89,11 +89,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             onmouseover="this.style.background='#ef4444';this.style.color='#fff'" onmouseout="this.style.background='#fee2e2';this.style.color='#991b1b'">
             <i class="bi bi-shield-fill"></i> Admin
         </button>
-        <button type="button" onclick="fillCreds('electrical@hostel.com','staff123')"
-            style="background:#dbeafe;color:#1e40af;padding:5px 12px;border-radius:99px;font-size:11px;font-weight:600;border:1.5px solid #bfdbfe;cursor:pointer;transition:all .2s"
-            onmouseover="this.style.background='#3b82f6';this.style.color='#fff'" onmouseout="this.style.background='#dbeafe';this.style.color='#1e40af'">
-            <i class="bi bi-tools"></i> Staff
-        </button>
         <button type="button" onclick="fillCreds('amit@student.com','student123')"
             style="background:#d1fae5;color:#065f46;padding:5px 12px;border-radius:99px;font-size:11px;font-weight:600;border:1.5px solid #a7f3d0;cursor:pointer;transition:all .2s"
             onmouseover="this.style.background='#10b981';this.style.color='#fff'" onmouseout="this.style.background='#d1fae5';this.style.color='#065f46'">

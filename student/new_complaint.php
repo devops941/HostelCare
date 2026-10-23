@@ -51,22 +51,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     if (empty($errors)) {
-        // Determine status and auto-assign
-        $catStmt = $db->prepare('SELECT assigned_staff_id FROM categories WHERE category_id = ?');
-        $catStmt->execute([$category_id]);
-        $cat = $catStmt->fetch();
-
-        $status = $cat && $cat['assigned_staff_id'] ? 'assigned' : 'pending';
-
         $ins = $db->prepare('INSERT INTO complaints (student_id,category_id,title,description,image_path,priority,status) VALUES (?,?,?,?,?,?,?)');
-        $ins->execute([$_SESSION['user_id'], $category_id, $title, $description, $image_path, $priority, $status]);
+        $ins->execute([$_SESSION['user_id'], $category_id, $title, $description, $image_path, $priority, 'pending']);
         $new_id = (int)$db->lastInsertId();
-
-        // Record auto-assignment in audit trail
-        if ($status === 'assigned') {
-            $upd = $db->prepare('INSERT INTO complaint_updates (complaint_id,updated_by,old_status,new_status,remarks) VALUES (?,?,?,?,?)');
-            $upd->execute([$new_id, $_SESSION['user_id'], 'pending', 'assigned', 'Auto-assigned to staff on submission.']);
-        }
 
         $_SESSION['flash_success'] = 'Complaint #' . $new_id . ' submitted successfully!';
         header('Location: ' . BASE_URL . '/student/my_complaints.php');
@@ -79,7 +66,7 @@ include __DIR__ . '/../includes/header.php';
 
 <div class="page-header mb-4">
     <h4><i class="bi bi-plus-circle me-2"></i>Submit a New Complaint</h4>
-    <p>Fill in the form below. Your complaint will be assigned automatically.</p>
+    <p>Fill in the form below. Admin will review and process your complaint.</p>
 </div>
 
 <div class="row justify-content-center">

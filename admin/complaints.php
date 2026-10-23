@@ -20,7 +20,7 @@ $sql = "SELECT c.complaint_id, c.title, c.priority, c.status, c.created_at,
         WHERE 1=1";
 $params = [];
 
-if ($status && in_array($status, ['pending','assigned','in_progress','resolved','closed'])) {
+if ($status && in_array($status, ['pending','in_progress','resolved','closed'])) {
     $sql .= ' AND c.status = ?'; $params[] = $status;
 }
 if ($priority && in_array($priority, ['low','medium','high'])) {
@@ -58,7 +58,7 @@ include __DIR__ . '/../includes/header.php';
                    placeholder="Search title / student / category" value="<?= htmlspecialchars($search) ?>">
             <select name="status" class="form-select form-select-sm" style="width:150px">
                 <option value="">All Statuses</option>
-                <?php foreach (['pending','assigned','in_progress','resolved','closed'] as $s): ?>
+                <?php foreach (['pending','in_progress','resolved','closed'] as $s): ?>
                 <option value="<?= $s ?>" <?= $status===$s?'selected':'' ?>><?= ucfirst(str_replace('_',' ',$s)) ?></option>
                 <?php endforeach; ?>
             </select>
@@ -87,14 +87,16 @@ include __DIR__ . '/../includes/header.php';
                     <th>Priority</th>
                     <th>Status</th>
                     <th>Submitted</th>
+                    <th>Action</th>
                 </tr>
             </thead>
             <tbody>
             <?php if (empty($complaints)): ?>
-            <tr><td colspan="8" class="text-center text-muted py-4">No complaints found.</td></tr>
+            <tr><td colspan="9" class="text-center text-muted py-4">No complaints found.</td></tr>
             <?php else: ?>
             <?php foreach ($complaints as $c):
-                $isEscalated = in_array($c['status'],['pending','assigned']) && $c['hours_old'] >= 48;
+                $isEscalated = $c['status'] === 'pending' && $c['hours_old'] >= 48;
+                $canUpdate   = !in_array($c['status'], ['closed']);
             ?>
             <tr class="<?= $isEscalated ? 'table-danger' : '' ?>">
                 <td class="fw-bold text-primary">#<?= $c['complaint_id'] ?></td>
@@ -110,6 +112,15 @@ include __DIR__ . '/../includes/header.php';
                 <td><span class="priority-badge priority-<?= $c['priority'] ?>"><?= ucfirst($c['priority']) ?></span></td>
                 <td><span class="status-badge status-<?= $c['status'] ?>"><?= ucfirst(str_replace('_',' ',$c['status'])) ?></span></td>
                 <td class="text-muted small"><?= date('d M Y', strtotime($c['created_at'])) ?></td>
+                <td>
+                    <?php if ($canUpdate): ?>
+                    <a href="<?= BASE_URL ?>/admin/update_status.php?id=<?= $c['complaint_id'] ?>" class="btn btn-sm btn-outline-primary">
+                        <i class="bi bi-pencil-square"></i> Update
+                    </a>
+                    <?php else: ?>
+                    <span class="text-muted small">Closed</span>
+                    <?php endif; ?>
+                </td>
             </tr>
             <?php endforeach; endif; ?>
             </tbody>

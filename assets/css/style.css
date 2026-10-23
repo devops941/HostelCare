@@ -197,7 +197,6 @@ body {
   flex-shrink: 0;
 }
 .avatar-admin   { background: linear-gradient(135deg,#f59e0b,#ef4444); }
-.avatar-staff   { background: linear-gradient(135deg,#10b981,#06b6d4); }
 .avatar-student { background: linear-gradient(135deg,#4f46e5,#8b5cf6); }
 .sidebar-user-info { flex: 1; min-width: 0; }
 .sidebar-user-name {

@@ -51,7 +51,7 @@ $statusData = $stmt3->fetchAll();
 $stmt4 = $db->prepare("
     SELECT cat.name AS cat_name,
            COUNT(c.complaint_id) AS total,
-           SUM(CASE WHEN c.status = 'resolved' THEN 1 ELSE 0 END) AS resolved,
+           SUM(CASE WHEN c.status IN ('resolved','closed') THEN 1 ELSE 0 END) AS resolved,
            ROUND(AVG(f.rating), 1) AS avg_rating
     FROM categories cat
     LEFT JOIN complaints c ON cat.category_id = c.category_id AND DATE(c.created_at) >= ?
@@ -131,12 +131,6 @@ include __DIR__ . '/../includes/header.php';
     </div>
 </div>
 
-<!-- Monthly trend -->
-<div class="card border-0 shadow-sm mb-4">
-    <div class="card-header fw-semibold bg-light"><i class="bi bi-graph-up me-2"></i>Monthly Complaint Trend (Last 6 Months)</div>
-    <div class="card-body" style="position:relative;height:280px"><canvas id="monthlyChart"></canvas></div>
-</div>
-
 <!-- Summary table -->
 <div class="card border-0 shadow-sm">
     <div class="card-header fw-semibold bg-light"><i class="bi bi-table me-2"></i>Summary by Category</div>
@@ -203,20 +197,6 @@ new Chart(document.getElementById('statusChart'), {
             borderWidth: 2, borderColor: '#fff' }]
     },
     options: { responsive:true, maintainAspectRatio:false, plugins:{ legend:{position:'bottom'} } }
-});
-
-// Monthly line chart
-new Chart(document.getElementById('monthlyChart'), {
-    type: 'line',
-    data: {
-        labels: chartData.monthly.map(d => d.mon_label),
-        datasets: [{ label:'Complaints', data: chartData.monthly.map(d => d.cnt),
-            borderColor:'#2563eb', backgroundColor:'rgba(37,99,235,0.1)',
-            fill:true, tension:0.4, borderWidth:3,
-            pointBackgroundColor:'#2563eb', pointBorderColor:'#fff', pointBorderWidth:2, pointRadius:5 }]
-    },
-    options: { responsive:true, maintainAspectRatio:false,
-        scales:{ y:{ beginAtZero:true, ticks:{stepSize:1} } } }
 });
 </script>
 
