@@ -28,17 +28,6 @@ $stmt = $db->prepare("
 $stmt->execute([$filterDate]);
 $categoryData = $stmt->fetchAll();
 
-// Monthly trend last 6 months
-$stmt2 = $db->prepare("
-    SELECT DATE_FORMAT(created_at,'%Y-%m') AS mon,
-           DATE_FORMAT(created_at,'%b %Y') AS mon_label,
-           COUNT(*) AS cnt
-    FROM complaints WHERE created_at >= DATE_SUB(NOW(), INTERVAL 6 MONTH)
-    GROUP BY mon ORDER BY mon ASC
-");
-$stmt2->execute();
-$monthlyData = $stmt2->fetchAll();
-
 // Status distribution
 $stmt3 = $db->prepare("
     SELECT status, COUNT(*) AS cnt FROM complaints
@@ -69,7 +58,6 @@ $overallAvgRating = count($summaryData) > 0
 
 $chartJSON = json_encode([
     'categories' => $categoryData,
-    'monthly'    => $monthlyData,
     'status'     => $statusData,
 ]);
 
